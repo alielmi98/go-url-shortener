@@ -54,6 +54,7 @@ services:
 volumes:
   postgres:
   pgadmin:
+  redis:
 
 networks:
   webapi_network:
