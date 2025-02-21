@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/alielmi98/go-url-shortener/api"
 	"github.com/alielmi98/go-url-shortener/config"
 	"github.com/alielmi98/go-url-shortener/constants"
 	"github.com/alielmi98/go-url-shortener/data/cache"
@@ -26,4 +27,5 @@ func main() {
 	}
 
 	migrations.Up_1()
+	api.InitServer(cfg)
 }

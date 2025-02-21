@@ -1,4 +1,83 @@
+definitions:
+  github_com_alielmi98_go-url-shortener_api_dto.RegisterUserByUsernameRequest:
+    properties:
+      email:
+        minLength: 6
+        type: string
+      password:
+        minLength: 6
+        type: string
+      username:
+        minLength: 5
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse:
+    properties:
+      error: {}
+      result: {}
+      resultCode:
+        $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.ResultCode'
+      success:
+        type: boolean
+    type: object
+  github_com_alielmi98_go-url-shortener_api_helper.ResultCode:
+    enum:
+    - 0
+    - 40001
+    - 40101
+    - 40301
+    - 40401
+    - 42901
+    - 42902
+    - 50001
+    - 50002
+    - 50003
+    type: integer
+    x-enum-varnames:
+    - Success
+    - ValidationError
+    - AuthError
+    - ForbiddenError
+    - NotFoundError
+    - LimiterError
+    - OtpLimiterError
+    - CustomRecovery
+    - InternalError
+    - InvalidInputError
 info:
   contact: {}
-paths: {}
+paths:
+  /v1/users/register-by-username:
+    post:
+      consumes:
+      - application/json
+      description: Register by username
+      parameters:
+      - description: RegisterUserByUsernameRequest
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_dto.RegisterUserByUsernameRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Success
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+        "400":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+        "409":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+      summary: Register by username
+      tags:
+      - users
 swagger: "2.0"

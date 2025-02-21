@@ -14,7 +14,117 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/v1/users/register-by-username": {
+            "post": {
+                "description": "Register by username",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Register by username",
+                "parameters": [
+                    {
+                        "description": "RegisterUserByUsernameRequest",
+                        "name": "Request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_dto.RegisterUserByUsernameRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "github_com_alielmi98_go-url-shortener_api_dto.RegisterUserByUsernameRequest": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "minLength": 6
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6
+                },
+                "username": {
+                    "type": "string",
+                    "minLength": 5
+                }
+            }
+        },
+        "github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse": {
+            "type": "object",
+            "properties": {
+                "error": {},
+                "result": {},
+                "resultCode": {
+                    "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.ResultCode"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "github_com_alielmi98_go-url-shortener_api_helper.ResultCode": {
+            "type": "integer",
+            "enum": [
+                0,
+                40001,
+                40101,
+                40301,
+                40401,
+                42901,
+                42902,
+                50001,
+                50002,
+                50003
+            ],
+            "x-enum-varnames": [
+                "Success",
+                "ValidationError",
+                "AuthError",
+                "ForbiddenError",
+                "NotFoundError",
+                "LimiterError",
+                "OtpLimiterError",
+                "CustomRecovery",
+                "InternalError",
+                "InvalidInputError"
+            ]
+        }
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it

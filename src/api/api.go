@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/alielmi98/go-url-shortener/api/router"
 	"github.com/alielmi98/go-url-shortener/config"
 	"github.com/alielmi98/go-url-shortener/constants"
 	"github.com/alielmi98/go-url-shortener/docs"
@@ -22,11 +23,13 @@ func InitServer(cfg *config.Config) {
 }
 
 func RegisterRoutes(r *gin.Engine, cfg *config.Config) {
-	//api := r.Group("/api")
+	api := r.Group("/api")
 
-	//v1 := api.Group("/v1")
+	v1 := api.Group("/v1")
 	{
 		//User
+		users := v1.Group("/users")
+		router.User(users, cfg)
 		//Short Url
 
 	}
