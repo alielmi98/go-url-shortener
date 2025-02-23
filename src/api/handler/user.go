@@ -6,6 +6,8 @@ import (
 	"github.com/alielmi98/go-url-shortener/api/dto"
 	"github.com/alielmi98/go-url-shortener/api/helper"
 	"github.com/alielmi98/go-url-shortener/config"
+	"github.com/alielmi98/go-url-shortener/constants"
+	"github.com/alielmi98/go-url-shortener/services"
 	"github.com/alielmi98/go-url-shortener/usecase"
 
 	"github.com/gin-gonic/gin"
@@ -14,6 +16,7 @@ import (
 type UsersHandler struct {
 	usecase *usecase.UserUsecase
 	config  *config.Config
+	service *services.TokenService
 }
 
 func NewUsersHandler(cfg *config.Config) *UsersHandler {
@@ -76,6 +79,31 @@ func (h *UsersHandler) LoginByUsername(c *gin.Context) {
 			helper.GenerateBaseResponseWithError(nil, false, helper.InternalError, err))
 		return
 	}
+	// Set the refresh token in a cookie
+	c.SetCookie(constants.RefreshTokenCookieName, token.RefreshToken, int(h.config.JWT.RefreshTokenExpireDuration*60), "/", h.config.Server.Domin, true, true)
+
+	c.JSON(http.StatusOK, helper.GenerateBaseResponse(token, true, helper.Success))
+}
+
+// RefreshToken godoc
+// @Summary Refresh token
+// @Description Refresh token
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} helper.BaseHttpResponse "Success"
+// @Failure 400 {object} helper.BaseHttpResponse "Failed"
+// @Failure 401 {object} helper.BaseHttpResponse "Failed"
+// @Router /v1/users/refresh-token [get]
+func (h *UsersHandler) RefreshToken(c *gin.Context) {
+	token, err := h.service.RefreshToken(c)
+	if err != nil {
+		c.AbortWithStatusJSON(helper.TranslateErrorToStatusCode(err),
+			helper.GenerateBaseResponseWithError(nil, false, helper.InternalError, err))
+		return
+	}
+	// Set the refresh token in a cookie
+	c.SetCookie(constants.RefreshTokenCookieName, token.RefreshToken, int(h.config.JWT.RefreshTokenExpireDuration*60), "/", h.config.Server.Domin, true, true)
 
 	c.JSON(http.StatusOK, helper.GenerateBaseResponse(token, true, helper.Success))
 }
