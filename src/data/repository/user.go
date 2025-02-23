@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"log"
 
 	"github.com/alielmi98/go-url-shortener/constants"
@@ -42,6 +43,21 @@ func (r *UserRepository) Create(user *models.User) error {
 	}
 	tx.Commit()
 	return nil
+}
+
+func (r *UserRepository) FindByUsername(username string) (*models.User, error) {
+	var user models.User
+	err := r.db.
+		Model(&models.User{}).
+		Where("username = ?", username).
+		First(&user).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, &service_errors.ServiceError{EndUserMessage: service_errors.UsernameOrPasswordInvalid}
+		}
+		return nil, err
+	}
+	return &user, nil
 }
 
 func (r *UserRepository) existsByEmail(email string) (bool, error) {

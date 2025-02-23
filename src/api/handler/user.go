@@ -50,3 +50,32 @@ func (h *UsersHandler) RegisterByUsername(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, helper.GenerateBaseResponse(nil, true, helper.Success))
 }
+
+// LoginByUsername godoc
+// @Summary Login by username
+// @Description Login by username
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param Request body dto.LoginByUsernameRequest true "LoginByUsernameRequest"
+// @Success 200 {object} helper.BaseHttpResponse "Success"
+// @Failure 400 {object} helper.BaseHttpResponse "Failed"
+// @Failure 401 {object} helper.BaseHttpResponse "Failed"
+// @Router /v1/users/login-by-username [post]
+func (h *UsersHandler) LoginByUsername(c *gin.Context) {
+	req := new(dto.LoginByUsernameRequest)
+	if err := c.ShouldBindJSON(req); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest,
+			helper.GenerateBaseResponseWithValidationError(nil, false, helper.ValidationError, err))
+		return
+	}
+
+	token, err := h.usecase.LoginByUsername(req)
+	if err != nil {
+		c.AbortWithStatusJSON(helper.TranslateErrorToStatusCode(err),
+			helper.GenerateBaseResponseWithError(nil, false, helper.InternalError, err))
+		return
+	}
+
+	c.JSON(http.StatusOK, helper.GenerateBaseResponse(token, true, helper.Success))
+}
