@@ -12,6 +12,6 @@ type UpdateShortnUrlRequest struct {
 type ShortnUrlResponse struct {
 	Id          int    `json:"id"`
 	OriginalURL string `json:"original_url"`
-	ShortURL    string `json:"short_url"`
+	ShortCode   string `json:"short_code"`
 	AccessCount int    `json:"access_count"`
 }
