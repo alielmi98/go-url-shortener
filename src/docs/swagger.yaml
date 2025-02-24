@@ -1,4 +1,11 @@
 definitions:
+  github_com_alielmi98_go-url-shortener_api_dto.CreateShortnUrlRequest:
+    properties:
+      original_url:
+        type: string
+    required:
+    - original_url
+    type: object
   github_com_alielmi98_go-url-shortener_api_dto.LoginByUsernameRequest:
     properties:
       password:
@@ -62,6 +69,36 @@ definitions:
 info:
   contact: {}
 paths:
+  /v1/shorten:
+    post:
+      consumes:
+      - application/json
+      description: Create shortn url
+      parameters:
+      - description: CreateShortnUrlRequest
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_dto.CreateShortnUrlRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Success
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+        "400":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+        "409":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+      summary: Create shortn url
+      tags:
+      - shortn_urls
   /v1/users/login-by-username:
     post:
       consumes:
@@ -90,6 +127,29 @@ paths:
           schema:
             $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
       summary: Login by username
+      tags:
+      - users
+  /v1/users/refresh-token:
+    get:
+      consumes:
+      - application/json
+      description: Refresh token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+        "400":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+        "401":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+      summary: Refresh token
       tags:
       - users
   /v1/users/register-by-username:
@@ -122,4 +182,9 @@ paths:
       summary: Register by username
       tags:
       - users
+securityDefinitions:
+  AuthBearer:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

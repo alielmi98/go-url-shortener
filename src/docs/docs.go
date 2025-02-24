@@ -15,6 +15,52 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/v1/shorten": {
+            "post": {
+                "description": "Create shortn url",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "shortn_urls"
+                ],
+                "summary": "Create shortn url",
+                "parameters": [
+                    {
+                        "description": "CreateShortnUrlRequest",
+                        "name": "Request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_dto.CreateShortnUrlRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/users/login-by-username": {
             "post": {
                 "description": "Login by username",
@@ -39,6 +85,41 @@ const docTemplate = `{
                         }
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/users/refresh-token": {
+            "get": {
+                "description": "Refresh token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Refresh token",
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -109,6 +190,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "github_com_alielmi98_go-url-shortener_api_dto.CreateShortnUrlRequest": {
+            "type": "object",
+            "required": [
+                "original_url"
+            ],
+            "properties": {
+                "original_url": {
+                    "type": "string"
+                }
+            }
+        },
         "github_com_alielmi98_go-url-shortener_api_dto.LoginByUsernameRequest": {
             "type": "object",
             "required": [
@@ -186,6 +278,13 @@ const docTemplate = `{
                 "InternalError",
                 "InvalidInputError"
             ]
+        }
+    },
+    "securityDefinitions": {
+        "AuthBearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`
