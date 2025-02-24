@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/alielmi98/go-url-shortener/api/middlewares"
 	"github.com/alielmi98/go-url-shortener/api/router"
 	"github.com/alielmi98/go-url-shortener/config"
 	"github.com/alielmi98/go-url-shortener/constants"
@@ -16,6 +17,7 @@ import (
 func InitServer(cfg *config.Config) {
 	r := gin.New()
 
+	r.Use(middlewares.Cors(cfg))
 	RegisterRoutes(r, cfg)
 	RegisterSwagger(r, cfg)
 	log.Printf("Caller:%s Level:%s Msg:%s", constants.General, constants.Startup, "Started")

@@ -11,6 +11,9 @@ import (
 	"github.com/alielmi98/go-url-shortener/data/db/migrations"
 )
 
+// @securityDefinitions.apikey AuthBearer
+// @in header
+// @name Authorization
 func main() {
 	cfg := config.GetConfig()
 
