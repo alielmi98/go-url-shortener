@@ -44,7 +44,7 @@ func (r *shortUrlRepository) Exists(shortUrl string) (bool, error) {
 	var exists bool
 	if err := r.db.Model(&models.ShortURL{}).
 		Select("count(*) > 0").
-		Where("short_url = ?", shortUrl).
+		Where("short_code = ?", shortUrl).
 		Find(&exists).
 		Error; err != nil {
 		log.Printf("Caller:%s Level:%s Msg:%s", constants.Postgres, constants.Select, err.Error())
