@@ -12,6 +12,7 @@ import (
 
 type ShortUrlRepository interface {
 	Create(ctx context.Context, model *models.ShortURL) (*models.ShortURL, error)
+	Update(ctx context.Context, id int, model *models.ShortURL) error
 	Exists(shortUrl string) (bool, error)
 }
 
@@ -38,6 +39,21 @@ func (r *shortUrlRepository) Create(ctx context.Context, model *models.ShortURL)
 	tx.Commit()
 
 	return model, nil
+}
+
+func (r *shortUrlRepository) Update(ctx context.Context, id int, model *models.ShortURL) error {
+	tx := r.db.WithContext(ctx).Begin()
+	if err := tx.Model(model).
+		Where("id = ? ", id).
+		Updates(model).
+		Error; err != nil {
+		tx.Rollback()
+		log.Printf("Caller:%s Level:%s Msg:%s ", constants.Postgres, constants.Update, err.Error())
+		return err
+	}
+	tx.Commit()
+
+	return nil
 }
 
 func (r *shortUrlRepository) Exists(shortUrl string) (bool, error) {

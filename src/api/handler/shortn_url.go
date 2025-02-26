@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/alielmi98/go-url-shortener/api/dto"
 	"github.com/alielmi98/go-url-shortener/api/helper"
@@ -46,4 +47,34 @@ func (h *ShortnUrlsHandler) Create(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, helper.GenerateBaseResponse(shortnUrl, true, helper.Success))
 
+}
+
+// Update godoc
+// @Summary Update shortn url
+// @Description Update shortn url
+// @Tags shortn_urls
+// @Accept  json
+// @Produce  json
+// @Param id path int true "ShortnUrl ID"
+// @Param Request body dto.UpdateShortnUrlRequest true "UpdateShortnUrlRequest"
+// @Success 200 {object} helper.BaseHttpResponse "Success"
+// @Failure 400 {object} helper.BaseHttpResponse "Failed"
+// @Failure 404 {object} helper.BaseHttpResponse "Failed"
+// @Failure 500 {object} helper.BaseHttpResponse "Failed"
+// @Router /v1/shorten/{id} [put]
+func (h *ShortnUrlsHandler) Update(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Params.ByName("id"))
+	var updateReqDTO dto.UpdateShortnUrlRequest
+	if err := c.ShouldBindJSON(&updateReqDTO); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest,
+			helper.GenerateBaseResponseWithValidationError(nil, false, helper.ValidationError, err))
+		return
+	}
+	response, err := h.usecase.UpdateShortUrl(c, id, &updateReqDTO)
+	if err != nil {
+		c.AbortWithStatusJSON(helper.TranslateErrorToStatusCode(err),
+			helper.GenerateBaseResponseWithError(nil, false, helper.InternalError, err))
+		return
+	}
+	c.JSON(http.StatusOK, helper.GenerateBaseResponse(response, true, helper.Success))
 }

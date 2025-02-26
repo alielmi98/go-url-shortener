@@ -9,4 +9,5 @@ import (
 func Shorten(router *gin.RouterGroup, cfg *config.Config) {
 	h := handler.NewShortnUrlsHandler(cfg)
 	router.POST("/", h.Create)
+	router.PUT("/:id", h.Update)
 }

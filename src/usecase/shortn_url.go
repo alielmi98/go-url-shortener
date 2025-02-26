@@ -8,10 +8,12 @@ import (
 	"github.com/alielmi98/go-url-shortener/data/models"
 	"github.com/alielmi98/go-url-shortener/data/repository"
 	"github.com/alielmi98/go-url-shortener/services"
+	"github.com/mitchellh/mapstructure"
 )
 
 type ShortenUrlUsecase interface {
 	CreateShortnUrl(ctx context.Context, url *dto.CreateShortnUrlRequest) (*dto.ShortnUrlResponse, error)
+	UpdateShortUrl(ctx context.Context, id int, url *dto.UpdateShortnUrlRequest) (*dto.ShortnUrlResponse, error)
 }
 
 // ShortenUrlUsecase implementation
@@ -49,5 +51,23 @@ func (u *shortenUrlUsecase) CreateShortnUrl(ctx context.Context, url *dto.Create
 		return &dto.ShortnUrlResponse{}, err
 	}
 
+	return response, err
+}
+
+func (u *shortenUrlUsecase) UpdateShortUrl(ctx context.Context, id int, url *dto.UpdateShortnUrlRequest) (*dto.ShortnUrlResponse, error) {
+	model := new(models.ShortURL)
+	if err := mapstructure.Decode(url, model); err != nil {
+		return nil, err
+	}
+
+	err := u.repo.Update(ctx, id, model)
+	if err != nil {
+		return &dto.ShortnUrlResponse{}, err
+	}
+
+	response, err := common.TypeConverter[dto.ShortnUrlResponse](model)
+	if err != nil {
+		return &dto.ShortnUrlResponse{}, err
+	}
 	return response, err
 }
