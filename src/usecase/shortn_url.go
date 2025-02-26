@@ -41,6 +41,7 @@ func (u *shortenUrlUsecase) CreateShortnUrl(ctx context.Context, url *dto.Create
 	}
 	model.ShortCode = shortCode
 	model.OriginalURL = url.OriginalURL
+	model.AccessCount = url.AccessCount
 
 	createdModel, err := u.repo.Create(ctx, model)
 	if err != nil {

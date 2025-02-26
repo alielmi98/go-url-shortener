@@ -2,6 +2,7 @@ package dto
 
 type CreateShortnUrlRequest struct {
 	OriginalURL string `json:"original_url" binding:"required"`
+	AccessCount int    `json:"access_count" binding:"required"`
 }
 
 type UpdateShortnUrlRequest struct {
