@@ -3,23 +3,21 @@ package services
 import (
 	"errors"
 
-	"github.com/alielmi98/go-url-shortener/data/repository"
 	"github.com/alielmi98/go-url-shortener/pkg/service_errors"
 	"github.com/google/uuid"
 )
 
 type ShortUrlGenerator struct {
 	length int
-	repo   repository.ShortUrlRepository
 }
 
 func NewShortUrlGenerator(length int) *ShortUrlGenerator {
 	return &ShortUrlGenerator{
 		length: length,
-		repo:   repository.NewShortUrlRepository()}
+	}
 }
 
-func (g *ShortUrlGenerator) Generate() (string, error) {
+func (g *ShortUrlGenerator) GenerateUniqueShortCode(checkExists func(string) (bool, error)) (string, error) {
 	if g.length <= 0 {
 		return "", &service_errors.ServiceError{
 			EndUserMessage:   "Invalid length",
@@ -29,9 +27,9 @@ func (g *ShortUrlGenerator) Generate() (string, error) {
 	}
 
 	for {
-		shortUrl := uuid.New().String()[:g.length]
+		shorCode := uuid.New().String()[:g.length]
 
-		exists, err := g.repo.Exists(shortUrl)
+		exists, err := checkExists(shorCode)
 		if err != nil {
 			return "", &service_errors.ServiceError{
 				EndUserMessage:   "Internal server error",
@@ -39,9 +37,9 @@ func (g *ShortUrlGenerator) Generate() (string, error) {
 				Err:              err,
 			}
 		}
-
 		if !exists {
-			return shortUrl, nil
+			return shorCode, nil
 		}
+
 	}
 }

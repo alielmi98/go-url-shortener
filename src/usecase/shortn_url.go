@@ -29,7 +29,10 @@ func NewShortenUrlUsecase() ShortenUrlUsecase {
 
 func (u *shortenUrlUsecase) CreateShortnUrl(ctx context.Context, url *dto.CreateShortnUrlRequest) (*dto.ShortnUrlResponse, error) {
 	model := new(models.ShortURL)
-	shortCode, err := u.service.Generate()
+
+	shortCode, err := u.service.GenerateUniqueShortCode(func(code string) (bool, error) {
+		return u.repo.Exists(code)
+	})
 	if err != nil {
 		return nil, err
 	}
