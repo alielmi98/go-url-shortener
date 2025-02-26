@@ -14,6 +14,7 @@ import (
 type ShortenUrlUsecase interface {
 	CreateShortnUrl(ctx context.Context, url *dto.CreateShortnUrlRequest) (*dto.ShortnUrlResponse, error)
 	UpdateShortUrl(ctx context.Context, id int, url *dto.UpdateShortnUrlRequest) (*dto.ShortnUrlResponse, error)
+	DeleteShortUrl(ctx context.Context, id int) error
 }
 
 // ShortenUrlUsecase implementation
@@ -70,4 +71,8 @@ func (u *shortenUrlUsecase) UpdateShortUrl(ctx context.Context, id int, url *dto
 		return &dto.ShortnUrlResponse{}, err
 	}
 	return response, err
+}
+
+func (u *shortenUrlUsecase) DeleteShortUrl(ctx context.Context, id int) error {
+	return u.repo.Delete(ctx, id)
 }

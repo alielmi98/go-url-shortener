@@ -118,6 +118,48 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "Delete shortn url",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "shortn_urls"
+                ],
+                "summary": "Delete shortn url",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ShortnUrl ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    }
+                }
             }
         },
         "/v1/users/login-by-username": {

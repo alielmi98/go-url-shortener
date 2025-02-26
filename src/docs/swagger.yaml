@@ -109,6 +109,34 @@ paths:
       tags:
       - shortn_urls
   /v1/shorten/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete shortn url
+      parameters:
+      - description: ShortnUrl ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+        "404":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+        "500":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+      summary: Delete shortn url
+      tags:
+      - shortn_urls
     put:
       consumes:
       - application/json

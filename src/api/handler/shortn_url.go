@@ -78,3 +78,25 @@ func (h *ShortnUrlsHandler) Update(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, helper.GenerateBaseResponse(response, true, helper.Success))
 }
+
+// Delete godoc
+// @Summary Delete shortn url
+// @Description Delete shortn url
+// @Tags shortn_urls
+// @Accept  json
+// @Produce  json
+// @Param id path int true "ShortnUrl ID"
+// @Success 200 {object} helper.BaseHttpResponse "Success"
+// @Failure 404 {object} helper.BaseHttpResponse "Failed"
+// @Failure 500 {object} helper.BaseHttpResponse "Failed"
+// @Router /v1/shorten/{id} [delete]
+func (h *ShortnUrlsHandler) Delete(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Params.ByName("id"))
+	err := h.usecase.DeleteShortUrl(c, id)
+	if err != nil {
+		c.AbortWithStatusJSON(helper.TranslateErrorToStatusCode(err),
+			helper.GenerateBaseResponseWithError(nil, false, helper.InternalError, err))
+		return
+	}
+	c.JSON(http.StatusOK, helper.GenerateBaseResponse(nil, true, helper.Success))
+}
