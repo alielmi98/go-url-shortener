@@ -32,6 +32,7 @@ func NewShortnUrlsHandler(cfg *config.Config) *ShortnUrlsHandler {
 // @Failure 400 {object} helper.BaseHttpResponse "Failed"
 // @Failure 409 {object} helper.BaseHttpResponse "Failed"
 // @Router /v1/shorten [post]
+// @Security AuthBearer
 func (h *ShortnUrlsHandler) Create(c *gin.Context) {
 	var createReqDTO dto.CreateShortnUrlRequest
 	if err := c.ShouldBindJSON(&createReqDTO); err != nil {
@@ -62,6 +63,7 @@ func (h *ShortnUrlsHandler) Create(c *gin.Context) {
 // @Failure 404 {object} helper.BaseHttpResponse "Failed"
 // @Failure 500 {object} helper.BaseHttpResponse "Failed"
 // @Router /v1/shorten/{id} [put]
+// @Security AuthBearer
 func (h *ShortnUrlsHandler) Update(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Params.ByName("id"))
 	var updateReqDTO dto.UpdateShortnUrlRequest
@@ -90,6 +92,7 @@ func (h *ShortnUrlsHandler) Update(c *gin.Context) {
 // @Failure 404 {object} helper.BaseHttpResponse "Failed"
 // @Failure 500 {object} helper.BaseHttpResponse "Failed"
 // @Router /v1/shorten/{id} [delete]
+// @Security AuthBearer
 func (h *ShortnUrlsHandler) Delete(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Params.ByName("id"))
 	err := h.usecase.DeleteShortUrl(c, id)
@@ -112,6 +115,7 @@ func (h *ShortnUrlsHandler) Delete(c *gin.Context) {
 // @Failure 404 {object} helper.BaseHttpResponse "Failed"
 // @Failure 500 {object} helper.BaseHttpResponse "Failed"
 // @Router /v1/shorten/{short_code}/stats [get]
+// @Security AuthBearer
 func (h *ShortnUrlsHandler) GetByShortCode(c *gin.Context) {
 	shortCode := c.Params.ByName("short_code")
 	response, err := h.usecase.GetByShortCode(c, shortCode)
@@ -134,6 +138,7 @@ func (h *ShortnUrlsHandler) GetByShortCode(c *gin.Context) {
 // @Failure 404 {object} helper.BaseHttpResponse "Failed"
 // @Failure 500 {object} helper.BaseHttpResponse "Failed"
 // @Router /v1/shorten/{short_code} [get]
+// @Security AuthBearer
 func (h *ShortnUrlsHandler) RedirectToOriginalURL(c *gin.Context) {
 	shortCode := c.Params.ByName("short_code")
 	response, err := h.usecase.GetByShortCode(c, shortCode)

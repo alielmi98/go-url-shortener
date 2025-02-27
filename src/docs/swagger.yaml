@@ -108,6 +108,8 @@ paths:
           description: Failed
           schema:
             $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
       summary: Create shortn url
       tags:
       - shortn_urls
@@ -137,6 +139,8 @@ paths:
           description: Failed
           schema:
             $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
       summary: Delete shortn url
       tags:
       - shortn_urls
@@ -175,6 +179,8 @@ paths:
           description: Failed
           schema:
             $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
       summary: Update shortn url
       tags:
       - shortn_urls
@@ -204,6 +210,8 @@ paths:
           description: Failed
           schema:
             $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
       summary: Redirect to original URL
       tags:
       - shortn_urls
@@ -233,6 +241,8 @@ paths:
           description: Failed
           schema:
             $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
       summary: Get shortn url by short code
       tags:
       - shortn_urls

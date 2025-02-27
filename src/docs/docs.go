@@ -17,6 +17,11 @@ const docTemplate = `{
     "paths": {
         "/v1/shorten": {
             "post": {
+                "security": [
+                    {
+                        "AuthBearer": []
+                    }
+                ],
                 "description": "Create shortn url",
                 "consumes": [
                     "application/json"
@@ -63,6 +68,11 @@ const docTemplate = `{
         },
         "/v1/shorten/{id}": {
             "put": {
+                "security": [
+                    {
+                        "AuthBearer": []
+                    }
+                ],
                 "description": "Update shortn url",
                 "consumes": [
                     "application/json"
@@ -120,6 +130,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "AuthBearer": []
+                    }
+                ],
                 "description": "Delete shortn url",
                 "consumes": [
                     "application/json"
@@ -164,6 +179,11 @@ const docTemplate = `{
         },
         "/v1/shorten/{short_code}": {
             "get": {
+                "security": [
+                    {
+                        "AuthBearer": []
+                    }
+                ],
                 "description": "Redirect to original URL using short code",
                 "consumes": [
                     "application/json"
@@ -208,6 +228,11 @@ const docTemplate = `{
         },
         "/v1/shorten/{short_code}/stats": {
             "get": {
+                "security": [
+                    {
+                        "AuthBearer": []
+                    }
+                ],
                 "description": "Get shortn url by short code",
                 "consumes": [
                     "application/json"

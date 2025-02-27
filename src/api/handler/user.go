@@ -22,7 +22,12 @@ type UsersHandler struct {
 func NewUsersHandler(cfg *config.Config) *UsersHandler {
 	usecase := usecase.NewUserUsecase(cfg)
 	config := cfg
-	return &UsersHandler{usecase: usecase, config: config}
+	service := services.NewTokenService(cfg)
+	return &UsersHandler{
+		usecase: usecase,
+		config:  config,
+		service: service,
+	}
 }
 
 // RegisterByUsername godoc
