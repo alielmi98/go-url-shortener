@@ -12,4 +12,5 @@ func Shorten(router *gin.RouterGroup, cfg *config.Config) {
 	router.PUT("/:id", h.Update)
 	router.DELETE("/:id", h.Delete)
 	router.GET("/:short_code/stats", h.GetByShortCode)
+	router.GET("/:short_code", h.RedirectToOriginalURL)
 }

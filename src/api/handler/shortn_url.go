@@ -122,3 +122,25 @@ func (h *ShortnUrlsHandler) GetByShortCode(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, helper.GenerateBaseResponse(response, true, helper.Success))
 }
+
+// RedirectToOriginalURL godoc
+// @Summary Redirect to original URL
+// @Description Redirect to original URL using short code
+// @Tags shortn_urls
+// @Accept  json
+// @Produce  json
+// @Param short_code path string true "ShortnUrl Short Code"
+// @Success 302 {object} helper.BaseHttpResponse "Redirect"
+// @Failure 404 {object} helper.BaseHttpResponse "Failed"
+// @Failure 500 {object} helper.BaseHttpResponse "Failed"
+// @Router /v1/shorten/{short_code} [get]
+func (h *ShortnUrlsHandler) RedirectToOriginalURL(c *gin.Context) {
+	shortCode := c.Params.ByName("short_code")
+	response, err := h.usecase.GetByShortCode(c, shortCode)
+	if err != nil {
+		c.AbortWithStatusJSON(helper.TranslateErrorToStatusCode(err),
+			helper.GenerateBaseResponseWithError(nil, false, helper.InternalError, err))
+		return
+	}
+	c.Redirect(http.StatusFound, response.OriginalURL)
+}
