@@ -15,6 +15,7 @@ type ShortUrlRepository interface {
 	Update(ctx context.Context, id int, model *models.ShortURL) error
 	Delete(ctx context.Context, id int) error
 	Exists(shortUrl string) (bool, error)
+	GetByShortCode(ctx context.Context, shortCode string) (*models.ShortURL, error)
 }
 
 type shortUrlRepository struct {
@@ -81,4 +82,16 @@ func (r *shortUrlRepository) Exists(shortUrl string) (bool, error) {
 		return false, err
 	}
 	return exists, nil
+}
+
+func (r *shortUrlRepository) GetByShortCode(ctx context.Context, shortCode string) (*models.ShortURL, error) {
+	model := new(models.ShortURL)
+	if err := r.db.WithContext(ctx).
+		Where("short_code = ?", shortCode).
+		First(model).
+		Error; err != nil {
+		log.Printf("Caller:%s Level:%s Msg:%s", constants.Postgres, constants.Select, err.Error())
+		return nil, err
+	}
+	return model, nil
 }

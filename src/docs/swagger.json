@@ -151,6 +151,50 @@
                 }
             }
         },
+        "/v1/shorten/{short_code}/stats": {
+            "get": {
+                "description": "Get shortn url by short code",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "shortn_urls"
+                ],
+                "summary": "Get shortn url by short code",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ShortnUrl Short Code",
+                        "name": "short_code",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/users/login-by-username": {
             "post": {
                 "description": "Login by username",
@@ -283,9 +327,13 @@
         "github_com_alielmi98_go-url-shortener_api_dto.CreateShortnUrlRequest": {
             "type": "object",
             "required": [
+                "access_count",
                 "original_url"
             ],
             "properties": {
+                "access_count": {
+                    "type": "integer"
+                },
                 "original_url": {
                     "type": "string"
                 }

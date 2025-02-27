@@ -100,3 +100,25 @@ func (h *ShortnUrlsHandler) Delete(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, helper.GenerateBaseResponse(nil, true, helper.Success))
 }
+
+// GetByShortCode godoc
+// @Summary Get shortn url by short code
+// @Description Get shortn url by short code
+// @Tags shortn_urls
+// @Accept  json
+// @Produce  json
+// @Param short_code path string true "ShortnUrl Short Code"
+// @Success 200 {object} helper.BaseHttpResponse "Success"
+// @Failure 404 {object} helper.BaseHttpResponse "Failed"
+// @Failure 500 {object} helper.BaseHttpResponse "Failed"
+// @Router /v1/shorten/{short_code}/stats [get]
+func (h *ShortnUrlsHandler) GetByShortCode(c *gin.Context) {
+	shortCode := c.Params.ByName("short_code")
+	response, err := h.usecase.GetByShortCode(c, shortCode)
+	if err != nil {
+		c.AbortWithStatusJSON(helper.TranslateErrorToStatusCode(err),
+			helper.GenerateBaseResponseWithError(nil, false, helper.InternalError, err))
+		return
+	}
+	c.JSON(http.StatusOK, helper.GenerateBaseResponse(response, true, helper.Success))
+}

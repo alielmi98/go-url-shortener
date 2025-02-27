@@ -15,4 +15,6 @@ type ShortnUrlResponse struct {
 	OriginalURL string `json:"original_url"`
 	ShortCode   string `json:"short_code"`
 	AccessCount int    `json:"access_count"`
+	CreatedAt   string `json:"created_at"`
+	ModifiedAt  string `json:"modified_at"`
 }

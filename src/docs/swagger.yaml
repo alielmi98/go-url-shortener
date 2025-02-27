@@ -1,9 +1,12 @@
 definitions:
   github_com_alielmi98_go-url-shortener_api_dto.CreateShortnUrlRequest:
     properties:
+      access_count:
+        type: integer
       original_url:
         type: string
     required:
+    - access_count
     - original_url
     type: object
   github_com_alielmi98_go-url-shortener_api_dto.LoginByUsernameRequest:
@@ -173,6 +176,35 @@ paths:
           schema:
             $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
       summary: Update shortn url
+      tags:
+      - shortn_urls
+  /v1/shorten/{short_code}/stats:
+    get:
+      consumes:
+      - application/json
+      description: Get shortn url by short code
+      parameters:
+      - description: ShortnUrl Short Code
+        in: path
+        name: short_code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+        "404":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+        "500":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+      summary: Get shortn url by short code
       tags:
       - shortn_urls
   /v1/users/login-by-username:
