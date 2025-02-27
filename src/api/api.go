@@ -33,7 +33,7 @@ func RegisterRoutes(r *gin.Engine, cfg *config.Config) {
 		users := v1.Group("/users")
 		router.User(users, cfg)
 		//Short Url
-		shortn := v1.Group("/shorten")
+		shortn := v1.Group("/shorten", middlewares.Authentication(cfg))
 		router.Shorten(shortn, cfg)
 
 	}
