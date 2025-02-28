@@ -8,11 +8,11 @@ import (
 )
 
 type BaseModel struct {
-	Id int `gorm:"primarykey"`
+	Id int `json:"id" gorm:"primarykey"`
 
-	CreatedAt  time.Time    `gorm:"type:TIMESTAMP with time zone;not null"`
-	ModifiedAt sql.NullTime `gorm:"type:TIMESTAMP with time zone;null"`
-	DeletedAt  sql.NullTime `gorm:"type:TIMESTAMP with time zone;null;index"`
+	CreatedAt  time.Time    `json:"created_at"  gorm:"type:TIMESTAMP with time zone;not null"`
+	ModifiedAt sql.NullTime `json:"modified_at" gorm:"type:TIMESTAMP with time zone;null"`
+	DeletedAt  sql.NullTime `json:"deleted_at" gorm:"type:TIMESTAMP with time zone;null;index"`
 }
 
 func (m *BaseModel) BeforeCreate(tx *gorm.DB) (err error) {

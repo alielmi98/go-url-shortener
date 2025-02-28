@@ -12,7 +12,7 @@ import (
 
 type ShortUrlRepository interface {
 	Create(ctx context.Context, model *models.ShortURL) (*models.ShortURL, error)
-	Update(ctx context.Context, id int, model *models.ShortURL) error
+	Update(ctx context.Context, shortCode string, model *models.ShortURL) error
 	Delete(ctx context.Context, shortCode string) error
 	Exists(shortUrl string) (bool, error)
 	GetByShortCode(ctx context.Context, shortCode string) (*models.ShortURL, error)
@@ -44,10 +44,10 @@ func (r *shortUrlRepository) Create(ctx context.Context, model *models.ShortURL)
 	return model, nil
 }
 
-func (r *shortUrlRepository) Update(ctx context.Context, id int, model *models.ShortURL) error {
+func (r *shortUrlRepository) Update(ctx context.Context, shortCode string, model *models.ShortURL) error {
 	tx := r.db.WithContext(ctx).Begin()
 	if err := tx.Model(model).
-		Where("id = ? ", id).
+		Where("short_code = ? ", shortCode).
 		Updates(model).
 		Error; err != nil {
 		tx.Rollback()

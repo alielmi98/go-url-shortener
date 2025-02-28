@@ -78,50 +78,7 @@ paths:
           description: Failed
           schema:
             $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
-      security:
-      - AuthBearer: []
       summary: Create shortn url
-      tags:
-      - shortn_urls
-  /v1/shorten/{id}:
-    put:
-      consumes:
-      - application/json
-      description: Update shortn url
-      parameters:
-      - description: ShortnUrl ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: UpdateShortnUrlRequest
-        in: body
-        name: Request
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_dto.UpdateShortnUrlRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
-        "400":
-          description: Failed
-          schema:
-            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
-        "404":
-          description: Failed
-          schema:
-            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
-        "500":
-          description: Failed
-          schema:
-            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
-      security:
-      - AuthBearer: []
-      summary: Update shortn url
       tags:
       - shortn_urls
   /v1/shorten/{short_code}:
@@ -130,11 +87,11 @@ paths:
       - application/json
       description: Delete shortn url
       parameters:
-      - description: ShortnUrl ID
+      - description: ShortnUrl Short Code
         in: path
-        name: id
+        name: short_code
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -150,8 +107,6 @@ paths:
           description: Failed
           schema:
             $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
-      security:
-      - AuthBearer: []
       summary: Delete shortn url
       tags:
       - shortn_urls
@@ -180,9 +135,45 @@ paths:
           description: Failed
           schema:
             $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
-      security:
-      - AuthBearer: []
       summary: Redirect to original URL
+      tags:
+      - shortn_urls
+    put:
+      consumes:
+      - application/json
+      description: Update shortn url
+      parameters:
+      - description: ShortnUrl Short Code
+        in: path
+        name: short_code
+        required: true
+        type: string
+      - description: UpdateShortnUrlRequest
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_dto.UpdateShortnUrlRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+        "400":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+        "404":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+        "500":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
+      summary: Update shortn url
       tags:
       - shortn_urls
   /v1/shorten/{short_code}/stats:
@@ -211,14 +202,7 @@ paths:
           description: Failed
           schema:
             $ref: '#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse'
-      security:
-      - AuthBearer: []
       summary: Get shortn url by short code
       tags:
       - shortn_urls
-securityDefinitions:
-  AuthBearer:
-    in: header
-    name: Authorization
-    type: apiKey
 swagger: "2.0"

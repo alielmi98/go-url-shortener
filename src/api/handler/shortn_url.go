@@ -2,7 +2,6 @@ package handler
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/alielmi98/go-url-shortener/api/dto"
 	"github.com/alielmi98/go-url-shortener/api/helper"
@@ -32,7 +31,6 @@ func NewShortnUrlsHandler(cfg *config.Config) *ShortnUrlsHandler {
 // @Failure 400 {object} helper.BaseHttpResponse "Failed"
 // @Failure 409 {object} helper.BaseHttpResponse "Failed"
 // @Router /v1/shorten [post]
-// @Security AuthBearer
 func (h *ShortnUrlsHandler) Create(c *gin.Context) {
 	var createReqDTO dto.CreateShortnUrlRequest
 	if err := c.ShouldBindJSON(&createReqDTO); err != nil {
@@ -56,29 +54,28 @@ func (h *ShortnUrlsHandler) Create(c *gin.Context) {
 // @Tags shortn_urls
 // @Accept  json
 // @Produce  json
-// @Param id path int true "ShortnUrl ID"
+// @Param short_code path string true "ShortnUrl Short Code"
 // @Param Request body dto.UpdateShortnUrlRequest true "UpdateShortnUrlRequest"
 // @Success 200 {object} helper.BaseHttpResponse "Success"
 // @Failure 400 {object} helper.BaseHttpResponse "Failed"
 // @Failure 404 {object} helper.BaseHttpResponse "Failed"
 // @Failure 500 {object} helper.BaseHttpResponse "Failed"
-// @Router /v1/shorten/{id} [put]
-// @Security AuthBearer
+// @Router /v1/shorten/{short_code} [put]
 func (h *ShortnUrlsHandler) Update(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Params.ByName("id"))
+	shortCode := c.Params.ByName("short_code")
 	var updateReqDTO dto.UpdateShortnUrlRequest
 	if err := c.ShouldBindJSON(&updateReqDTO); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest,
 			helper.GenerateBaseResponseWithValidationError(nil, false, helper.ValidationError, err))
 		return
 	}
-	response, err := h.usecase.UpdateShortUrl(c, id, &updateReqDTO)
+	err := h.usecase.UpdateShortUrl(c, shortCode, &updateReqDTO)
 	if err != nil {
 		c.AbortWithStatusJSON(helper.TranslateErrorToStatusCode(err),
 			helper.GenerateBaseResponseWithError(nil, false, helper.InternalError, err))
 		return
 	}
-	c.JSON(http.StatusOK, helper.GenerateBaseResponse(response, true, helper.Success))
+	c.JSON(http.StatusOK, helper.GenerateBaseResponse("record updated successfully", true, helper.Success))
 }
 
 // Delete godoc
@@ -87,12 +84,11 @@ func (h *ShortnUrlsHandler) Update(c *gin.Context) {
 // @Tags shortn_urls
 // @Accept  json
 // @Produce  json
-// @Param id path int true "ShortnUrl ID"
+// @Param short_code path string true "ShortnUrl Short Code"
 // @Success 200 {object} helper.BaseHttpResponse "Success"
 // @Failure 404 {object} helper.BaseHttpResponse "Failed"
 // @Failure 500 {object} helper.BaseHttpResponse "Failed"
 // @Router /v1/shorten/{short_code} [delete]
-// @Security AuthBearer
 func (h *ShortnUrlsHandler) Delete(c *gin.Context) {
 	shortCode := c.Params.ByName("short_code")
 	err := h.usecase.DeleteShortUrl(c, shortCode)
@@ -101,7 +97,8 @@ func (h *ShortnUrlsHandler) Delete(c *gin.Context) {
 			helper.GenerateBaseResponseWithError(nil, false, helper.InternalError, err))
 		return
 	}
-	c.JSON(http.StatusOK, helper.GenerateBaseResponse(nil, true, helper.Success))
+	c.JSON(http.StatusOK, helper.GenerateBaseResponse("record deleted successfully", true, helper.Success))
+
 }
 
 // GetByShortCode godoc
@@ -115,7 +112,6 @@ func (h *ShortnUrlsHandler) Delete(c *gin.Context) {
 // @Failure 404 {object} helper.BaseHttpResponse "Failed"
 // @Failure 500 {object} helper.BaseHttpResponse "Failed"
 // @Router /v1/shorten/{short_code}/stats [get]
-// @Security AuthBearer
 func (h *ShortnUrlsHandler) GetByShortCode(c *gin.Context) {
 	shortCode := c.Params.ByName("short_code")
 	response, err := h.usecase.GetByShortCode(c, shortCode)
@@ -138,10 +134,10 @@ func (h *ShortnUrlsHandler) GetByShortCode(c *gin.Context) {
 // @Failure 404 {object} helper.BaseHttpResponse "Failed"
 // @Failure 500 {object} helper.BaseHttpResponse "Failed"
 // @Router /v1/shorten/{short_code} [get]
-// @Security AuthBearer
 func (h *ShortnUrlsHandler) RedirectToOriginalURL(c *gin.Context) {
 	shortCode := c.Params.ByName("short_code")
-	response, err := h.usecase.GetByShortCode(c, shortCode)
+
+	originalURL, err := h.usecase.GetOriginalURL(c, shortCode)
 	if err != nil {
 		c.AbortWithStatusJSON(helper.TranslateErrorToStatusCode(err),
 			helper.GenerateBaseResponseWithError(nil, false, helper.InternalError, err))
@@ -153,5 +149,5 @@ func (h *ShortnUrlsHandler) RedirectToOriginalURL(c *gin.Context) {
 			helper.GenerateBaseResponseWithError(nil, false, helper.InternalError, err))
 		return
 	}
-	c.Redirect(http.StatusFound, response.OriginalURL)
+	c.Redirect(http.StatusFound, originalURL)
 }

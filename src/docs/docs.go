@@ -17,11 +17,6 @@ const docTemplate = `{
     "paths": {
         "/v1/shorten": {
             "post": {
-                "security": [
-                    {
-                        "AuthBearer": []
-                    }
-                ],
                 "description": "Create shortn url",
                 "consumes": [
                     "application/json"
@@ -66,77 +61,8 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/shorten/{id}": {
-            "put": {
-                "security": [
-                    {
-                        "AuthBearer": []
-                    }
-                ],
-                "description": "Update shortn url",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "shortn_urls"
-                ],
-                "summary": "Update shortn url",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ShortnUrl ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "UpdateShortnUrlRequest",
-                        "name": "Request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_dto.UpdateShortnUrlRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Failed",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Failed",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Failed",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/shorten/{short_code}": {
             "get": {
-                "security": [
-                    {
-                        "AuthBearer": []
-                    }
-                ],
                 "description": "Redirect to original URL using short code",
                 "consumes": [
                     "application/json"
@@ -178,12 +104,64 @@ const docTemplate = `{
                     }
                 }
             },
-            "delete": {
-                "security": [
+            "put": {
+                "description": "Update shortn url",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "shortn_urls"
+                ],
+                "summary": "Update shortn url",
+                "parameters": [
                     {
-                        "AuthBearer": []
+                        "type": "string",
+                        "description": "ShortnUrl Short Code",
+                        "name": "short_code",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "UpdateShortnUrlRequest",
+                        "name": "Request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_dto.UpdateShortnUrlRequest"
+                        }
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
                 "description": "Delete shortn url",
                 "consumes": [
                     "application/json"
@@ -197,9 +175,9 @@ const docTemplate = `{
                 "summary": "Delete shortn url",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "ShortnUrl ID",
-                        "name": "id",
+                        "type": "string",
+                        "description": "ShortnUrl Short Code",
+                        "name": "short_code",
                         "in": "path",
                         "required": true
                     }
@@ -228,11 +206,6 @@ const docTemplate = `{
         },
         "/v1/shorten/{short_code}/stats": {
             "get": {
-                "security": [
-                    {
-                        "AuthBearer": []
-                    }
-                ],
                 "description": "Get shortn url by short code",
                 "consumes": [
                     "application/json"
@@ -341,13 +314,6 @@ const docTemplate = `{
                 "InternalError",
                 "InvalidInputError"
             ]
-        }
-    },
-    "securityDefinitions": {
-        "AuthBearer": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
         }
     }
 }`

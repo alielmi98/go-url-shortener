@@ -18,9 +18,10 @@ import (
 
 type ShortenUrlUsecase interface {
 	CreateShortnUrl(ctx context.Context, url *dto.CreateShortnUrlRequest) (*dto.ShortnUrlResponse, error)
-	UpdateShortUrl(ctx context.Context, id int, url *dto.UpdateShortnUrlRequest) (*dto.ShortnUrlResponse, error)
+	UpdateShortUrl(ctx context.Context, shortCode string, url *dto.UpdateShortnUrlRequest) error
 	DeleteShortUrl(ctx context.Context, shortCode string) error
 	GetByShortCode(ctx context.Context, shortCode string) (*dto.ShortnUrlResponse, error)
+	GetOriginalURL(ctx context.Context, shortCode string) (string, error)
 	IncrementAccessCount(ctx context.Context, shortCode string) error
 }
 
@@ -58,10 +59,10 @@ func (u *shortenUrlUsecase) CreateShortnUrl(ctx context.Context, url *dto.Create
 
 	response, err := common.TypeConverter[dto.ShortnUrlResponse](createdModel)
 	if err != nil {
-		return &dto.ShortnUrlResponse{}, err
+		return nil, err
 	}
 
-	err = cache.Set(u.cache, response.ShortCode, response, 24*time.Hour)
+	err = u.cache.Set(response.ShortCode, response.OriginalURL, 24*time.Hour).Err()
 	if err != nil {
 		log.Printf("Caller:%s Level:%s Msg:%s ", constants.Redis, constants.Insert, err.Error())
 		return response, nil
@@ -69,28 +70,25 @@ func (u *shortenUrlUsecase) CreateShortnUrl(ctx context.Context, url *dto.Create
 	return response, nil
 }
 
-func (u *shortenUrlUsecase) UpdateShortUrl(ctx context.Context, id int, url *dto.UpdateShortnUrlRequest) (*dto.ShortnUrlResponse, error) {
+func (u *shortenUrlUsecase) UpdateShortUrl(ctx context.Context, shortCode string, url *dto.UpdateShortnUrlRequest) error {
 	model := new(models.ShortURL)
 	if err := mapstructure.Decode(url, model); err != nil {
-		return nil, err
+		return err
 	}
 
-	err := u.repo.Update(ctx, id, model)
+	err := u.repo.Update(ctx, shortCode, model)
 	if err != nil {
-		return &dto.ShortnUrlResponse{}, err
+		return err
 	}
 
-	response, err := common.TypeConverter[dto.ShortnUrlResponse](model)
-	if err != nil {
-		return &dto.ShortnUrlResponse{}, err
+	if url.OriginalURL != "" {
+		err = u.cache.Set(shortCode, url.OriginalURL, 24*time.Hour).Err()
+		if err != nil {
+			log.Printf("Caller:%s Level:%s Msg:%s ", constants.Redis, constants.Insert, err.Error())
+			return nil
+		}
 	}
-
-	err = cache.Set(u.cache, response.ShortCode, response, 24*time.Hour)
-	if err != nil {
-		log.Printf("Caller:%s Level:%s Msg:%s ", constants.Redis, constants.Insert, err.Error())
-		return response, nil
-	}
-	return response, nil
+	return nil
 }
 
 func (u *shortenUrlUsecase) DeleteShortUrl(ctx context.Context, shortCode string) error {
@@ -103,26 +101,35 @@ func (u *shortenUrlUsecase) DeleteShortUrl(ctx context.Context, shortCode string
 }
 
 func (u *shortenUrlUsecase) GetByShortCode(ctx context.Context, shortCode string) (*dto.ShortnUrlResponse, error) {
-	response, err := cache.Get[*dto.ShortnUrlResponse](u.cache, shortCode)
-	if err == nil && response != nil {
-		return response, nil
-	}
-
 	model, err := u.repo.GetByShortCode(ctx, shortCode)
 	if err != nil {
 		return nil, err
 	}
 
-	response, err = common.TypeConverter[dto.ShortnUrlResponse](model)
+	response, err := common.TypeConverter[dto.ShortnUrlResponse](model)
 	if err != nil {
-		return &dto.ShortnUrlResponse{}, err
+		return nil, err
 	}
-	err = cache.Set(u.cache, response.ShortCode, response, 24*time.Hour)
+
+	return response, nil
+}
+func (u *shortenUrlUsecase) GetOriginalURL(ctx context.Context, shortCode string) (string, error) {
+	originalURL, err := u.cache.Get(shortCode).Result()
+	if err == nil {
+		return originalURL, nil
+	}
+
+	model, err := u.repo.GetByShortCode(ctx, shortCode)
+	if err != nil {
+		return "", err
+	}
+
+	err = u.cache.Set(shortCode, model.OriginalURL, 24*time.Hour).Err()
 	if err != nil {
 		log.Printf("Caller:%s Level:%s Msg:%s ", constants.Redis, constants.Insert, err.Error())
-		return response, nil
+		return model.OriginalURL, nil
 	}
-	return response, nil
+	return model.OriginalURL, nil
 }
 
 func (u *shortenUrlUsecase) IncrementAccessCount(ctx context.Context, shortCode string) error {
