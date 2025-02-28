@@ -29,11 +29,8 @@ func RegisterRoutes(r *gin.Engine, cfg *config.Config) {
 
 	v1 := api.Group("/v1")
 	{
-		//User
-		users := v1.Group("/users")
-		router.User(users, cfg)
 		//Short Url
-		shortn := v1.Group("/shorten", middlewares.Authentication(cfg))
+		shortn := v1.Group("/shorten")
 		router.Shorten(shortn, cfg)
 
 	}
