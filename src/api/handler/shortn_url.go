@@ -91,11 +91,11 @@ func (h *ShortnUrlsHandler) Update(c *gin.Context) {
 // @Success 200 {object} helper.BaseHttpResponse "Success"
 // @Failure 404 {object} helper.BaseHttpResponse "Failed"
 // @Failure 500 {object} helper.BaseHttpResponse "Failed"
-// @Router /v1/shorten/{id} [delete]
+// @Router /v1/shorten/{short_code} [delete]
 // @Security AuthBearer
 func (h *ShortnUrlsHandler) Delete(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Params.ByName("id"))
-	err := h.usecase.DeleteShortUrl(c, id)
+	shortCode := c.Params.ByName("short_code")
+	err := h.usecase.DeleteShortUrl(c, shortCode)
 	if err != nil {
 		c.AbortWithStatusJSON(helper.TranslateErrorToStatusCode(err),
 			helper.GenerateBaseResponseWithError(nil, false, helper.InternalError, err))

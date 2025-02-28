@@ -128,53 +128,6 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "AuthBearer": []
-                    }
-                ],
-                "description": "Delete shortn url",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "shortn_urls"
-                ],
-                "summary": "Delete shortn url",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ShortnUrl ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Failed",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Failed",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
-                        }
-                    }
-                }
             }
         },
         "/v1/shorten/{short_code}": {
@@ -207,6 +160,53 @@ const docTemplate = `{
                 "responses": {
                     "302": {
                         "description": "Redirect",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "AuthBearer": []
+                    }
+                ],
+                "description": "Delete shortn url",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "shortn_urls"
+                ],
+                "summary": "Delete shortn url",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ShortnUrl ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
                         "schema": {
                             "$ref": "#/definitions/github_com_alielmi98_go-url-shortener_api_helper.BaseHttpResponse"
                         }
@@ -280,13 +280,9 @@ const docTemplate = `{
         "github_com_alielmi98_go-url-shortener_api_dto.CreateShortnUrlRequest": {
             "type": "object",
             "required": [
-                "access_count",
                 "original_url"
             ],
             "properties": {
-                "access_count": {
-                    "type": "integer"
-                },
                 "original_url": {
                     "type": "string"
                 }

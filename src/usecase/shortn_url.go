@@ -2,9 +2,12 @@ package usecase
 
 import (
 	"context"
+	"log"
+	"time"
 
 	"github.com/alielmi98/go-url-shortener/api/dto"
 	"github.com/alielmi98/go-url-shortener/common"
+	"github.com/alielmi98/go-url-shortener/constants"
 	"github.com/alielmi98/go-url-shortener/data/models"
 	"github.com/alielmi98/go-url-shortener/data/repository"
 	"github.com/alielmi98/go-url-shortener/services"
@@ -14,7 +17,7 @@ import (
 type ShortenUrlUsecase interface {
 	CreateShortnUrl(ctx context.Context, url *dto.CreateShortnUrlRequest) (*dto.ShortnUrlResponse, error)
 	UpdateShortUrl(ctx context.Context, id int, url *dto.UpdateShortnUrlRequest) (*dto.ShortnUrlResponse, error)
-	DeleteShortUrl(ctx context.Context, id int) error
+	DeleteShortUrl(ctx context.Context, shortCode string) error
 	GetByShortCode(ctx context.Context, shortCode string) (*dto.ShortnUrlResponse, error)
 	IncrementAccessCount(ctx context.Context, shortCode string) error
 }
@@ -75,8 +78,11 @@ func (u *shortenUrlUsecase) UpdateShortUrl(ctx context.Context, id int, url *dto
 	return response, err
 }
 
-func (u *shortenUrlUsecase) DeleteShortUrl(ctx context.Context, id int) error {
-	return u.repo.Delete(ctx, id)
+func (u *shortenUrlUsecase) DeleteShortUrl(ctx context.Context, shortCode string) error {
+	err := u.repo.Delete(ctx, shortCode)
+	if err != nil {
+		return err
+	}
 }
 
 func (u *shortenUrlUsecase) GetByShortCode(ctx context.Context, shortCode string) (*dto.ShortnUrlResponse, error) {
