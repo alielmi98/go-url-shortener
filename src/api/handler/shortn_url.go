@@ -147,5 +147,11 @@ func (h *ShortnUrlsHandler) RedirectToOriginalURL(c *gin.Context) {
 			helper.GenerateBaseResponseWithError(nil, false, helper.InternalError, err))
 		return
 	}
+	err = h.usecase.IncrementAccessCount(c, shortCode)
+	if err != nil {
+		c.AbortWithStatusJSON(helper.TranslateErrorToStatusCode(err),
+			helper.GenerateBaseResponseWithError(nil, false, helper.InternalError, err))
+		return
+	}
 	c.Redirect(http.StatusFound, response.OriginalURL)
 }
