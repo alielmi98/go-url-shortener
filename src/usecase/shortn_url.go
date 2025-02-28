@@ -16,6 +16,7 @@ type ShortenUrlUsecase interface {
 	UpdateShortUrl(ctx context.Context, id int, url *dto.UpdateShortnUrlRequest) (*dto.ShortnUrlResponse, error)
 	DeleteShortUrl(ctx context.Context, id int) error
 	GetByShortCode(ctx context.Context, shortCode string) (*dto.ShortnUrlResponse, error)
+	IncrementAccessCount(ctx context.Context, shortCode string) error
 }
 
 // ShortenUrlUsecase implementation
@@ -42,7 +43,6 @@ func (u *shortenUrlUsecase) CreateShortnUrl(ctx context.Context, url *dto.Create
 	}
 	model.ShortCode = shortCode
 	model.OriginalURL = url.OriginalURL
-	model.AccessCount = url.AccessCount
 
 	createdModel, err := u.repo.Create(ctx, model)
 	if err != nil {
@@ -90,4 +90,8 @@ func (u *shortenUrlUsecase) GetByShortCode(ctx context.Context, shortCode string
 		return &dto.ShortnUrlResponse{}, err
 	}
 	return response, err
+}
+
+func (u *shortenUrlUsecase) IncrementAccessCount(ctx context.Context, shortCode string) error {
+	return u.repo.IncrementAccessCount(ctx, shortCode)
 }

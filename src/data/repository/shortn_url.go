@@ -16,6 +16,7 @@ type ShortUrlRepository interface {
 	Delete(ctx context.Context, id int) error
 	Exists(shortUrl string) (bool, error)
 	GetByShortCode(ctx context.Context, shortCode string) (*models.ShortURL, error)
+	IncrementAccessCount(ctx context.Context, shortCode string) error
 }
 
 type shortUrlRepository struct {
@@ -94,4 +95,16 @@ func (r *shortUrlRepository) GetByShortCode(ctx context.Context, shortCode strin
 		return nil, err
 	}
 	return model, nil
+}
+
+func (r *shortUrlRepository) IncrementAccessCount(ctx context.Context, shortCode string) error {
+	model := new(models.ShortURL)
+	if err := r.db.Model(model).
+		Where("short_code = ?", shortCode).
+		Update("access_count", gorm.Expr("access_count + ?", 1)).
+		Error; err != nil {
+		log.Printf("Caller:%s Level:%s Msg:%s", constants.Postgres, constants.Update, err.Error())
+		return err
+	}
+	return nil
 }
