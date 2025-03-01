@@ -16,7 +16,7 @@ postgres:
   maxOpenConns: 100
   connMaxLifetime: 5
 redis:
-  host: localhost
+  host: redis_container
   port: 6379
   password: password
   db: 0

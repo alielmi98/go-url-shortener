@@ -2,7 +2,16 @@
 version: "3.7"
 
 services:
-
+  backend:
+    build:
+      context: ../src
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    networks:
+      - webapi_network
+    depends_on:
+      - postgres
   ####################### POSTGRES #######################
   postgres:
     image: postgres
